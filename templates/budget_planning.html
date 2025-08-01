@@ -83,6 +83,7 @@
             
             <form method="POST" action="{{ url_for('budget_planning') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="budgetForm">
                 <label for="category">Category:</label>
                 <select id="category" name="category" required>
                     <option value="">Select a category</option>
@@ -101,6 +102,7 @@
                 <input type="date" id="target_date" name="target_date" />
 
                 <button type="submit" class="btn-submit">Add Goal</button>
+                </div>
             </form>
 
             <h2><i class="material-icons">list</i> Current Goals</h2>
