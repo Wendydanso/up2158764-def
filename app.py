@@ -60,7 +60,7 @@ class Transaction(db.Model):
     title = db.Column(db.String(100), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    type = db.Column(db.String(10), nullable=False)  # 'income' or 'expense'
+    type = db.Column(db.String(10), nullable=False)
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
 
 class BudgetGoal(db.Model):
@@ -78,7 +78,7 @@ class SavingsGoal(db.Model):
     current_amount = db.Column(db.Float, default=0)
     target_date = db.Column(db.Date)
 
-# Helper functions and decorators (unchanged)
+
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -162,7 +162,7 @@ def validate_budget_form(form):
     except ValueError as e:
         return None, f"Invalid input format: {str(e)}"
 
-# Authentication Routes (unchanged)
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -184,7 +184,7 @@ def register():
             
         new_user = User(username=username, email=email)
         new_user.set_password(password)
-        new_user.settings = UserSettings()  # Create default settings
+        new_user.settings = UserSettings()  
         
         db.session.add(new_user)
         try:
@@ -377,7 +377,7 @@ def report(current_user):
     
     return render_template('report.html', report_data=report_data)
 
-# API Endpoints (unchanged)
+# API Endpoints 
 @app.route('/api/summary')
 @token_required
 def api_summary(current_user):
@@ -461,12 +461,11 @@ def privacy_settings(current_user):
 @app.route('/update_privacy', methods=['POST'])
 @token_required
 def update_privacy(current_user):
-    # Handle privacy settings update
+
     analytics = request.form.get('analytics') == 'on'
     personalization = request.form.get('personalization') == 'on'
     
-    # Here you would save these preferences to the database
-    # For example:
+    
     # current_user.settings.analytics = analytics
     # current_user.settings.personalization = personalization
     # db.session.commit()
@@ -493,7 +492,7 @@ def settings(current_user):
         db.session.commit()
 
     if request.method == 'POST':
-        # Update settings from form data
+        
         current_user.settings.currency = request.form.get('currency', '$')
         current_user.settings.theme = request.form.get('theme', 'light')
         current_user.settings.monthly_budget = float(request.form.get('monthly_budget', 0))
@@ -510,7 +509,7 @@ def settings(current_user):
 @app.route('/api/settings', methods=['GET', 'PUT'])
 @token_required
 def api_user_settings(current_user):
-    # Ensure user has settings
+    
     if not current_user.settings:
         current_user.settings = UserSettings()
         db.session.commit()
@@ -532,7 +531,7 @@ def api_user_settings(current_user):
             if not data:
                 return jsonify({'error': 'No data provided'}), 400
 
-            # Update settings from the request data
+            
             current_user.settings.currency = data.get('currency', current_user.settings.currency)
             current_user.settings.theme = data.get('theme', current_user.settings.theme)
             current_user.settings.monthly_budget = float(data.get('monthly_budget', current_user.settings.monthly_budget))
@@ -570,7 +569,7 @@ def init_db():
         
         db.create_all()
         
-        # Add admin user if not exists
+       
         if not User.query.first():
             admin = User(username='admin', email='admin@example.com')
             admin.set_password('admin123')
