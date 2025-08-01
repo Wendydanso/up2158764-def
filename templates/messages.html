@@ -2,9 +2,14 @@
 
 {% block content %}
 <div class="messages-container">
-    <h1><i class="material-icons">chat</i> Messages</h1>
+    
+    <div class="messages-container">
+    <a href="{{ url_for('dashboard') }}">
+        <h4> Go to board</h4>
+    </a>
     
     <div class="messages-card">
+          <h3> Messages</h3>
         <div class="messages-sidebar">
             <div class="search-box">
                 <i class="material-icons">search</i>
