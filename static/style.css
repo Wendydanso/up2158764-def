@@ -775,22 +775,22 @@ strong{
 }
 
 /* Form Styles */
-#budgetForm {
+.budgetForm {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin-bottom: 30px;
 }
 
-#budgetForm label {
+.budgetForm label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
     color: #4a5568;
 }
 
-#budgetForm select,
-#budgetForm input {
+.budgetForm select,
+.budgetForm input {
     width: 80%;
     padding: 10px 12px;
     border: 1px solid #e2e8f0;
@@ -799,8 +799,8 @@ strong{
     background-color: #f8fafc;
 }
 
-#budgetForm select:focus,
-#budgetForm input:focus {
+.budgetForm select:focus,
+.budgetForm input:focus {
     outline: none;
     border-color: #4299e1;
     box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
