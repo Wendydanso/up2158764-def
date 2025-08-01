@@ -2,9 +2,13 @@
 
 {% block content %}
 <div class="legal-container">
-    <h1><i class="material-icons">shield</i> Privacy Settings</h1>
+    <div class="legal-container">
+    <a href="{{ url_for('dashboard') }}">
+        <h4> Go to board</h4>
+    </a>
     
     <div class="privacy-card">
+        <h3><i class="material-icons">shield</i> Privacy Settings</h3>
         <form method="POST" action="{{ url_for('update_privacy') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="privacy-option">
