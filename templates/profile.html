@@ -2,9 +2,13 @@
 
 {% block content %}
 <div class="profile-container">
-    <h1><i class="material-icons">person</i> User Profile</h1>
+    
+    <a href="{{ url_for('dashboard') }}">
+        <h4> Go to board</h4>
+    </a>
     
     <div class="profile-card">
+            <h3> User </h3>
         <div class="profile-header">
             <div class="avatar">
                 <i class="material-icons">account_circle</i>
