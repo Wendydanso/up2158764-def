@@ -1413,7 +1413,10 @@ th {
   margin: 0 auto;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
-
+.profile-container  a{
+text-decoration: none;
+color:#3182ce
+}
 .profile-card {
   background: white;
   border-radius: 10px;
@@ -1456,7 +1459,10 @@ th {
 
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
-
+.legal-container  a{
+text-decoration: none;
+color:#3182ce
+}
 .legal-card, .privacy-card {
   background: white;
   border-radius: 10px;
@@ -1537,7 +1543,10 @@ input:checked + .slider:before {
 
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
-
+.messages-container  a{
+text-decoration: none;
+color:#3182ce
+}
 .messages-card {
   display: flex;
   background: white;
