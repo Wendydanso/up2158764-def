@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Budget Management - Settings</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="left-icons">
+            <h1>Settings</h1>
+        </div>
+        <div class="right-icons">
+            <div class="search-right">
+                <i class="material-icons">search</i>
+                <input type="search" id="search" placeholder="Search..." />
+            </div>
+            <div class="icon-notification"><i class="material-icons">notifications</i></div>
+            <div class="dropdown">
+                <div class="icon-profile">
+                    <i class="material-icons">person</i>
+                </div>
+                <div class="dropdown-content">
+                    {% if current_user %}
+                        <h4>{{ current_user.username }}</h4>
+                        <a href="{{ url_for('profile') }}"><i class="material-icons">person</i> Profile</a>
+                        <a href="{{ url_for('terms_of_use') }}"><i class="material-icons">gavel</i> Terms of Use</a>
+                        <a href="{{ url_for('privacy_settings') }}"><i class="material-icons">shield</i> Privacy Settings</a>
+                        <a href="{{ url_for('messages') }}"><i class="material-icons">chat</i> Messages</a>
+                        <div class="language-selector">
+                            <i class="material-icons">translate</i>
+                            <select onchange="window.location.href='{{ url_for('change_language', lang='') }}' + this.value">
+                                <option value="en" {% if session.get('language', 'en') == 'en' %}selected{% endif %}>English (UK)</option>
+                                <option value="es">Español</option>
+                                <option value="fr">Français</option>
+                                <option value="de">Deutsch</option>
+                            </select>
+                        </div>
+                    {% endif %}
+                </div>
+                
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="column side">
+            <div class="logo">Budget</div>
+            <a href="{{ url_for('dashboard') }}">
+                <div class="sidebar-item"><i class="material-icons">dashboard</i>Dashboard</div>
+            </a>
+            <a href="{{ url_for('add_transaction') }}">
+                <div class="sidebar-item"><i class="material-icons">add_circle</i>Add transaction</div>
+            </a>
+            <a href="{{ url_for('transaction_history') }}">
+                <div class="sidebar-item"><i class="material-icons">receipt_long</i>Transaction history</div>
+            </a>
+            <a href="{{ url_for('budget_planning') }}">
+                <div class="sidebar-item"><i class="material-icons">account_balance_wallet</i>Budget planning</div>
+            </a>
+            <a href="{{ url_for('report') }}">
+                <div class="sidebar-item"><i class="material-icons">insert_chart</i>Report</div>
+            </a>
+            <a href="{{ url_for('settings') }}">
+                <div class="sidebar-item active"><i class="material-icons">settings</i>Settings</div>
+            </a>
+            <a href="{{ url_for('logout') }}">
+                <div class="sidebar-item"><i class="material-icons">logout</i>Logout</div>
+            </a>
+        </div>
+
+        <div class="column one">
+            <div class="settings-container">
+                <div class="settings-card">
+                    <h2 class="settings-title"><i class="material-icons">settings</i> Account Settings</h2>
+                    
+                    <form method="POST" action="{{ url_for('settings') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="section-title">Display Preferences</div>
+                        
+                        <div class="sform-group">
+                            <label for="currency">Currency</label>
+                            <select id="currency" name="currency">
+                                <option value="$" {% if settings.currency == '$' %}selected{% endif %}>US Dollar ($)</option>
+                                <option value="£" {% if settings.currency == '£' %}selected{% endif %}>British Pound (£)</option>
+                                <option value="€" {% if settings.currency == '€' %}selected{% endif %}>Euro (€)</option>
+                                <option value="¥" {% if settings.currency == '¥' %}selected{% endif %}>Japanese Yen (¥)</option>
+                                <option value="₹" {% if settings.currency == '₹' %}selected{% endif %}>Indian Rupee (₹)</option>
+                                <option value="₦" {% if settings.currency == '₦' %}selected{% endif %}>Nigerian Naira (₦)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="sform-group">
+                            <label for="theme">Theme</label>
+                            <select id="theme" name="theme">
+                                <option value="light" {% if settings.theme == 'light' %}selected{% endif %}>Light Mode</option>
+                                <option value="dark" {% if settings.theme == 'dark' %}selected{% endif %}>Dark Mode</option>
+                            </select>
+                        </div>
+                        
+                        <div class="section-title">Budget Settings</div>
+                        
+                        <div class="sform-group">
+                            <label for="monthly-budget">Monthly Budget</label>
+                            <input type="number" id="monthly-budget" name="monthly_budget" 
+                                   min="0" step="0.01" 
+                                   value="{{ settings.monthly_budget }}" 
+                                   placeholder="Enter your monthly budget">
+                        </div>
+                        
+                        <div class="section-title">Notification Preferences</div>
+                        
+                        <div class="sform-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="email-notifications" name="email_notifications"
+                                    {% if settings.email_notifications %}checked{% endif %}>
+                                <label for="email-notifications">Email Notifications</label>
+                            </div>
+                        </div>
+                        
+                        <div class="sform-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="push-notifications" name="push_notifications"
+                                    {% if settings.push_notifications %}checked{% endif %}>
+                                <label for="push-notifications">Push Notifications</label>
+                            </div>
+                        </div>
+                        
+                        <div class="sform-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="budget-alerts" name="budget_alerts"
+                                    {% if settings.budget_alerts %}checked{% endif %}>
+                                <label for="budget-alerts">Budget Limit Alerts</label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="save-btn"> Save </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

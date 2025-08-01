@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Budget Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A simple budget management app to track income, expenses, and savings.">
+    <meta name="theme-color" content="#2e7d32" />
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+
+<body>
+<header>
+  <div class="left-icons">
+    <h3>Dashboard</h3>
+  </div>
+  <div class="right-icons">
+    <div class="search-right">
+        <i class="material-icons">search</i>
+        <input type="search" id="search" placeholder="Search..." oninput="searchFunction()" />
+    </div>
+    <div class="icon-notification"><i class="material-icons">notifications</i></div>
+    <div class="dropdown">
+      <div class="icon-profile"><i class="material-icons">person</i></div>
+      <div class="dropdown-content">
+        {% if current_user %}
+            <h4>{{ current_user.username }}</h4>
+            <a href="{{ url_for('profile') }}"><i class="material-icons">person</i> Profile</a>
+            <a href="{{ url_for('terms_of_use') }}"><i class="material-icons">gavel</i> Terms of Use</a>
+            <a href="{{ url_for('privacy_settings') }}"><i class="material-icons">shield</i> Privacy Settings</a>
+            <a href="{{ url_for('messages') }}"><i class="material-icons">chat</i> Messages</a>
+            <div class="language-selector">
+                <i class="material-icons">translate</i>
+                <select onchange="window.location.href='{{ url_for('change_language', lang='') }}' + this.value">
+                    <option value="en" {% if session.get('language', 'en') == 'en' %}selected{% endif %}>English (UK)</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        {% endif %}
+    </div>
+  </div>
+</header>
+
+<div class="row">
+  <div class="column side">
+    <div class="logo">Budget</div>
+    <a href="{{ url_for('dashboard') }}">
+        <div class="sidebar-item active"><i class="material-icons">dashboard</i>Dashboard</div>
+    </a>
+    <a href="{{ url_for('add_transaction') }}">
+        <div class="sidebar-item"><i class="material-icons">add_circle</i>Add transaction</div>
+    </a>
+    <a href="{{ url_for('transaction_history') }}">
+        <div class="sidebar-item"><i class="material-icons">receipt_long</i>Transaction history</div>
+    </a>
+    <a href="{{ url_for('budget_planning') }}">
+      <div class="sidebar-item"><i class="material-icons">account_balance_wallet</i>Budget planning</div>
+    </a>
+    <a href="{{ url_for('report') }}">
+        <div class="sidebar-item"><i class="material-icons">insert_chart</i>Report</div>
+    </a>
+    <a href="{{ url_for('settings') }}">
+        <div class="sidebar-item"><i class="material-icons">settings</i>Settings</div>
+    </a>
+    <a href="{{ url_for('logout') }}">
+        <div class="sidebar-item"><i class="material-icons">logout</i>Logout</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="column one">
+    <div class="greetings">
+      <h2>Welcome back, Wendy!</h2>
+      <p>It is the best time to manage your finances</p>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+      <div>
+        <button class="icon-btn material-icons">calendar_month</button>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button class="period-btn">This month</button>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Overview Cards - Will be populated by JavaScript -->
+      <div class="card income">
+        <span class="material-icons">arrow_downward</span>
+        <div>
+          <h3>Income</h3>
+          <p id="income-amount">£0.00</p>
+        </div>
+      </div>
+
+      <div class="card expense">
+        <span class="material-icons">arrow_upward</span>
+        <div>
+          <h3>Expenses</h3>
+          <p id="expense-amount">£0.00</p>
+        </div>
+      </div>
+
+      <div class="card balance">
+        <span class="material-icons">account_balance</span>
+        <div>
+          <h3>Balance</h3>
+          <p id="balance-amount">£0.00</p>
+        </div>
+      </div>
+
+      <div class="card savings">
+        <span class="material-icons">savings</span>
+        <div>
+          <h3>Total Savings</h3>
+          <p id="savings-amount">£0.00</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="transaction-content">
+      <div class="recent-table">
+        <div class="recent-heading">
+          <h3>Recent Transactions</h3>
+          <button id="seeAllBtn">See all</button>
+        </div>
+        <table id="recentTransactions">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="saving-chart">
+        <h3>Saving Goals</h3>
+        <ul id="savingsGoals">
+          <!-- Will be populated by JavaScript -->
+        </ul>
+      </div>
+    </div>
+   
+    <div class="budget-content">
+      <div class="budget-chart">
+        <h3>Budget</h3>
+        <div class="chart-container">
+          <canvas id="budgetPieChart"></canvas>
+        </div>
+      </div>
+  
+      <div class="spending">
+        <h3>Monthly Spending Summary</h3>
+        <div class="chart-container">
+          <canvas id="spendingChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

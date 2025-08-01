@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <h1><i class="material-icons">person</i> User Profile</h1>
+    
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="avatar">
+                <i class="material-icons">account_circle</i>
+            </div>
+            <h2>{{ current_user.username }}</h2>
+            <p>{{ current_user.email }}</p>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-item">
+                <i class="material-icons">event</i>
+                <span>Member since: {{ current_user.created_at.strftime('%B %d, %Y') }}</span>
+            </div>
+            
+            <div class="detail-item">
+                <i class="material-icons">settings</i>
+                <a href="{{ url_for('settings') }}">Edit Profile Settings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

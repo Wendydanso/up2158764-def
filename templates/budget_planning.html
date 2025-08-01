@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Budget Planning</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <div class="left-icons">
+        <div class="search-right">  
+            <i class="material-icons">search</i>
+            <input type="search" id="search" placeholder="Search....">
+        </div>
+    </div>
+    <div class="right-icons">
+        <div class="icon-notification"><i class="material-icons">notifications</i></div>
+        <div class="dropdown">
+            <div class="icon-profile">
+                <i class="material-icons">person</i>
+            </div>
+            <div class="dropdown-content">
+                {% if current_user %}
+                    <h4>{{ current_user.username }}</h4>
+                    <a href="{{ url_for('profile') }}"><i class="material-icons">person</i> Profile</a>
+                    <a href="{{ url_for('terms_of_use') }}"><i class="material-icons">gavel</i> Terms of Use</a>
+                    <a href="{{ url_for('privacy_settings') }}"><i class="material-icons">shield</i> Privacy Settings</a>
+                    <a href="{{ url_for('messages') }}"><i class="material-icons">chat</i> Messages</a>
+                    <div class="language-selector">
+                        <i class="material-icons">translate</i>
+                        <select onchange="window.location.href='{{ url_for('change_language', lang='') }}' + this.value">
+                            <option value="en" {% if session.get('language', 'en') == 'en' %}selected{% endif %}>English (UK)</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                {% endif %}
+            </div>
+</header>
+
+<div class="row">
+    <div class="column side">
+        <div class="logo">Budget</div>
+        <a href="{{ url_for('dashboard') }}">
+            <div class="sidebar-item"><i class="material-icons">dashboard</i>Dashboard</div>
+        </a>
+        <a href="{{ url_for('add_transaction') }}">
+            <div class="sidebar-item"><i class="material-icons">add_circle</i>Add transaction</div>
+        </a>
+        <a href="{{ url_for('transaction_history') }}">
+            <div class="sidebar-item"><i class="material-icons">receipt_long</i>Transaction history</div>
+        </a>
+        <a href="{{ url_for('budget_planning') }}">
+            <div class="sidebar-item active"><i class="material-icons">account_balance_wallet</i>Budget planning</div>
+        </a>
+        <a href="{{ url_for('report') }}">
+            <div class="sidebar-item"><i class="material-icons">insert_chart</i>Report</div>
+        </a>
+        <a href="{{ url_for('settings') }}">
+            <div class="sidebar-item"><i class="material-icons">settings</i>Settings</div>
+        </a>
+        <a href="{{ url_for('logout') }}">
+                <div class="sidebar-item"><i class="material-icons">logout</i>Logout</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="column one">
+        <div class="budget-container">
+            <h1><i class="material-icons">account_balance_wallet</i> Budget Planning</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('budget_planning') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="">Select a category</option>
+                    <option value="Food">Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Utilities">Utilities</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Others">Others</option>
+                </select>
+
+                <label for="amount">Budget Goal (£):</label>
+                <input type="number" id="amount" name="amount" step="0.01" min="0.01" required />
+
+                <label for="target_date">Target Date (optional):</label>
+                <input type="date" id="target_date" name="target_date" />
+
+                <button type="submit" class="btn-submit">Add Goal</button>
+            </form>
+
+            <h2><i class="material-icons">list</i> Current Goals</h2>
+            <div class="goals-table-container">
+                <table class="goals-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Target Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for goal in goals %}
+                        <tr>
+                            <td>{{ goal.category }}</td>
+                            <td>£{{ "%.2f"|format(goal.amount) }}</td>
+                            <td>{% if goal.target_date %}{{ goal.target_date.strftime('%Y-%m-%d') }}{% else %}-{% endif %}</td>
+                            <td>
+                                <form action="{{ url_for('delete_goal', id=goal.id) }}" method="POST">
+                                    <button type="submit" class="delete-btn">
+                                        <i class="material-icons">delete</i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="no-goals">No budget goals yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

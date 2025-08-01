@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Budget Management</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+        <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+      
+<body>
+
+<header>
+    <div class="left-icons">
+        <h1>Budget Report</h1>
+      
+    </div>
+    <div class="right-icons">
+
+    <div class="search-right">
+        <i class="material-icons">search</i>
+        <input type="search" id="search" placeholder="Search..." oninput="searchFunction()" />
+      </div>
+        <div class="icon-notification"><i class="material-icons">notifications</i></div>
+        <div class="dropdown">
+            <div class="icon-profile">
+                <i class="material-icons">person</i>
+            </div>
+            <div class="dropdown-content">
+                {% if current_user %}
+                    <h4>{{ current_user.username }}</h4>
+                    <a href="{{ url_for('profile') }}"><i class="material-icons">person</i> Profile</a>
+                    <a href="{{ url_for('terms_of_use') }}"><i class="material-icons">gavel</i> Terms of Use</a>
+                    <a href="{{ url_for('privacy_settings') }}"><i class="material-icons">shield</i> Privacy Settings</a>
+                    <a href="{{ url_for('messages') }}"><i class="material-icons">chat</i> Messages</a>
+                    <div class="language-selector">
+                        <i class="material-icons">translate</i>
+                        <select onchange="window.location.href='{{ url_for('change_language', lang='') }}' + this.value">
+                            <option value="en" {% if session.get('language', 'en') == 'en' %}selected{% endif %}>English (UK)</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                {% endif %}
+            </div>
+    </div>
+</header>
+
+<div class="row ">
+    
+
+    <div class="column side">
+        <div class="logo">Budget</div>
+        <a href="{{ url_for('dashboard') }}">
+            <div class="sidebar-item"><i class="material-icons">dashboard</i>Dashboard</div>
+        </a>
+        <a href="{{ url_for('add_transaction') }}">
+            <div class="sidebar-item"><i class="material-icons">add_circle</i>Add transaction</div>
+        </a>
+        <a href="{{ url_for('transaction_history') }}">
+            <div class="sidebar-item"><i class="material-icons">receipt_long</i>Transaction history</div>
+        </a>
+        <a href="{{ url_for('budget_planning') }}">
+            <div class="sidebar-item"><i class="material-icons">account_balance_wallet</i>Budget planning</div>
+        </a>
+        <a href="{{ url_for('report') }}">
+            <div class="sidebar-item active"><i class="material-icons">insert_chart</i>Report</div>
+        </a>
+        <a href="{{ url_for('settings') }}">
+            <div class="sidebar-item"><i class="material-icons">settings</i>Settings</div>
+        </a>
+        <a href="{{ url_for('logout') }}">
+                <div class="sidebar-item"><i class="material-icons">logout</i>Logout</div>
+            </a>
+        </div>
+    </div>
+    
+
+        <div class="column one">
+ 
+                  <div class="report-container">
+            <h1>Budget Report</h1>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Spent ($)</th>
+                        <th>Goal ($)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in report_data %}
+                    <tr>
+                        <td>{{ item.category }}</td>
+                        <td>{{ "%.2f"|format(item.spent) }}</td>
+                        <td>{{ item.goal if item.goal != 'N/A' else 'N/A' }}</td>
+                        <td class="{{ item.status_class }}">{{ item.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="chart-container">
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
+        
+    </div>
+
+
+</body>
+</html>

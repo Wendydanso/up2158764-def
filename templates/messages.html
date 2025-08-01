@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="messages-container">
+    <h1><i class="material-icons">chat</i> Messages</h1>
+    
+    <div class="messages-card">
+        <div class="messages-sidebar">
+            <div class="search-box">
+                <i class="material-icons">search</i>
+                <input type="text" placeholder="Search messages...">
+            </div>
+            
+            <div class="conversation-list">
+                <!-- Sample conversation -->
+                <div class="conversation active">
+                    <div class="avatar">
+                        <i class="material-icons">account_circle</i>
+                    </div>
+                    <div class="conversation-details">
+                        <h3>Support Team</h3>
+                        <p>Thanks for your question! We'll get back to you soon.</p>
+                        <span class="time">2 hours ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="messages-content">
+            <div class="message-thread">
+                <!-- Sample messages -->
+                <div class="message received">
+                    <p>Hello! How can we help you today?</p>
+                    <span class="time">2:30 PM</span>
+                </div>
+                
+                <div class="message sent">
+                    <p>I have a question about my account settings.</p>
+                    <span class="time">2:35 PM</span>
+                </div>
+            </div>
+            
+            <div class="message-composer">
+                <input type="text" placeholder="Type your message...">
+                <button><i class="material-icons">send</i></button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

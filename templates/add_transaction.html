@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Budget Management</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+
+<body>
+<header>
+    <div class="left-icons">
+        <h3>Add Transaction</h3>
+    </div>
+    <div class="right-icons">
+      <div class="search-right">
+        <i class="material-icons">search</i>
+        <input type="search" id="search" placeholder="Search..." oninput="searchFunction()" />
+      </div>
+      <div class="icon-notification"><i class="material-icons">notifications</i></div>
+      <div class="dropdown">
+        <div class="icon-profile"><i class="material-icons">person</i></div>
+        <div class="dropdown-content">
+            {% if current_user %}
+                <h4>{{ current_user.username }}</h4>
+                <a href="{{ url_for('profile') }}"><i class="material-icons">person</i> Profile</a>
+                <a href="{{ url_for('terms_of_use') }}"><i class="material-icons">gavel</i> Terms of Use</a>
+                <a href="{{ url_for('privacy_settings') }}"><i class="material-icons">shield</i> Privacy Settings</a>
+                <a href="{{ url_for('messages') }}"><i class="material-icons">chat</i> Messages</a>
+                <div class="language-selector">
+                    <i class="material-icons">translate</i>
+                    <select onchange="window.location.href='{{ url_for('change_language', lang='') }}' + this.value">
+                        <option value="en" {% if session.get('language', 'en') == 'en' %}selected{% endif %}>English (UK)</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<div class="row">
+    <div class="column side">
+        <div class="logo">Budget</div>
+        <a href="{{ url_for('dashboard') }}">
+            <div class="sidebar-item"><i class="material-icons">dashboard</i> Dashboard</div>
+        </a>
+        <a href="{{ url_for('add_transaction') }}">
+            <div class="sidebar-item active"><i class="material-icons">add_circle</i> Add Transaction</div>
+        </a>
+        <a href="{{ url_for('transaction_history') }}">
+            <div class="sidebar-item"><i class="material-icons">receipt_long</i> Transaction History</div>
+        </a>
+        <a href="{{ url_for('budget_planning') }}">
+            <div class="sidebar-item"><i class="material-icons">account_balance_wallet</i>Budget planning</div>
+        </a>
+        <a href="{{ url_for('report') }}">
+            <div class="sidebar-item"><i class="material-icons">insert_chart</i> Report</div>
+        </a>
+        <a href="{{ url_for('settings') }}">
+            <div class="sidebar-item"><i class="material-icons">settings</i> Settings</div>
+        </a>
+        <a href="{{ url_for('logout') }}">
+                <div class="sidebar-item"><i class="material-icons">logout</i> Logout</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="column one">
+        <div class="form-container">
+            <h2>Add New Transaction</h2>
+
+            <!-- Display flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('add_transaction') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <div class="input-icon-group">
+                        <i class="material-icons">edit</i>
+                        <input type="text" name="title" id="title" placeholder="Title" required>
+                    </div>
+                    <div class="error-message" id="title-error">Please enter a title</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon-group">
+                        <i class="material-icons">attach_money</i>
+                        <input type="number" name="amount" id="amount" step="0.01" placeholder="Amount" required>
+                    </div>
+                    <div class="error-message" id="amount-error">Please enter a valid amount</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon-group">
+                        <i class="material-icons">category</i>
+                        <select name="category" id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Rent">Rent</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Education">Education</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="error-message" id="category-error">Please select a category</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon-group">
+                        <i class="material-icons">swap_vert</i>
+                        <select name="type" id="type" required>
+                            <option value="">Select Type</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    <div class="error-message" id="type-error">Please select a type</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-icon-group">
+                        <i class="material-icons">event</i>
+                        <input type="date" name="date" id="date" required>
+                    </div>
+                    <div class="error-message" id="date-error">Please select a date</div>
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <i class="material-icons">add</i> Add Transaction
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
