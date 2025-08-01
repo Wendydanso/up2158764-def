@@ -24,19 +24,19 @@ const doughnutCenterTextPlugin = {
 
 // Main initialization function
 function initializeBudgetApp() {
-  // Initialize charts
+ 
   initializeCharts();
   
-  // Set up form validation
+  
   setupFormValidation();
   
-  // Set default date to today
+
   setDefaultDate();
   
-  // Load data from API
+ 
   loadAPIData();
   
-  // Setup budget goals form
+  
   setupBudgetGoalsForm();
 }
 
@@ -368,24 +368,17 @@ window.editGoal = function(button) {
 
 
 
-
-
-
-
-
-
-
 // To get settings
 fetch('/api/settings', {
   method: 'GET',
   headers: {
       'Content-Type': 'application/json',
-      'x-access-token': localStorage.getItem('token')  // or your auth method
+      'x-access-token': localStorage.getItem('token')  
   }
 })
 .then(response => response.json())
 .then(data => {
-  // Update your form with the received settings
+
   document.getElementById('currency').value = data.currency;
   document.getElementById('theme').value = data.theme;
   // ... etc
@@ -406,7 +399,7 @@ document.getElementById('save-settings').addEventListener('click', () => {
       method: 'PUT',
       headers: {
           'Content-Type': 'application/json',
-          'x-access-token': localStorage.getItem('token')  // or your auth method
+          'x-access-token': localStorage.getItem('token')  
       },
       body: JSON.stringify(settings)
   })
@@ -416,13 +409,11 @@ document.getElementById('save-settings').addEventListener('click', () => {
           alert('Error: ' + data.error);
       } else {
           alert('Settings saved successfully!');
-          // Optionally update UI with returned settings
+          
       }
   });
 });
 
-
-// Add this to your script.js
 $.ajaxSetup({
   beforeSend: function(xhr, settings) {
       if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
